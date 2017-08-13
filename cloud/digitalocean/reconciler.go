@@ -15,10 +15,9 @@
 package digitalocean
 
 import (
+	"github.com/kris-nova/kubicorn/cutil/signals"
 	"os"
-	"os/signal"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/kris-nova/kubicorn/apis/cluster"
@@ -116,10 +115,7 @@ func (r *Reconciler) Reconcile(actualCluster, expectedCluster *cluster.Cluster) 
 			os.Exit(1)
 		}
 
-		c := make(chan os.Signal, 1)
-		signal.Notify(c, os.Interrupt)
-
-		go handleCtrlC(c)
+		go handleCtrlC()
 
 		resource := model[i]
 		expectedResource, err := resource.Expected(expectedCluster)
@@ -213,10 +209,9 @@ func newClusterDefaults(base *cluster.Cluster) *cluster.Cluster {
 	return new
 }
 
-func handleCtrlC(c chan os.Signal) {
-	sig := <-c
-	if sig == syscall.SIGINT {
-		sigCaught = true
-		logger.Critical("Detected SIGINT. Please be patient while kubicorn cleanly exits. Maybe get a cup of tea?")
+func handleCtrlC() {
+	sig := signals.State
+	if sig != nil {
+		logger.Critical("Detected signal %v. Please be patient while kubicorn cleanly exits. Maybe get a cup of tea?", sig)
 	}
 }
