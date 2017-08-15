@@ -212,7 +212,7 @@ func newClusterDefaults(base *cluster.Cluster) *cluster.Cluster {
 	return new
 }
 
-func handleCtrlC(h *signals.Handler) {	
+func handleCtrlC(h *signals.Handler) {
 	go func() {
 		for {
 			if h.GetState() != 0 {

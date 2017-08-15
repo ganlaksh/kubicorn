@@ -58,7 +58,7 @@ func (h *Handler) Register() {
 		select {
 		case s := <-h.signals:
 			switch {
-			case s == os.Interrupt:				
+			case s == os.Interrupt:
 				if h.signalReceived == 0 {
 					h.signalReceived = signalAbort
 					continue
